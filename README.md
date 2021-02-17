@@ -1,6 +1,6 @@
 # Git Flow Action
 
-[![CI Status](https://github.com/mlucascardoso/git-flow-ci-cd-action/workflows/Gitflow%20CI/badge.svg)](https://github.com/VAEES/git-flow-action/actions)
+[![CI Status](https://github.com/VAEES/git-flow-action/workflows/Gitflow%20CI/badge.svg)](https://github.com/VAEES/git-flow-action/actions)
 
 ## Inputs
 
