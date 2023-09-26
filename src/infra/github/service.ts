@@ -65,6 +65,8 @@ export class GitHubService implements GitHub {
             ...this.client.context.repo,
             pull_number: pull,
         });
+        console.log(response.data);
+
 
         return response.data.head.ref;
     }
