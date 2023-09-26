@@ -5880,6 +5880,7 @@ class GitHubService {
     getBranches() {
         return __awaiter(this, void 0, void 0, function* () {
             const current = yield this.getCurrentBranchName();
+            console.log('this.client.context.ref ===================================== ', this.client.context.ref);
             return {
                 current,
                 main: this.core.getInput('master_branch'),
