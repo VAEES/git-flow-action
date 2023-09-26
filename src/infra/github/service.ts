@@ -33,6 +33,11 @@ export class GitHubService implements GitHub {
 
     public async getBranches(): Promise<Branches> {
         const current = await this.getCurrentBranchName();
+        console.log(
+            'this.client.context.ref ===================================== ',
+            this.client.context.ref,
+        );
+
 
         return {
             current,
