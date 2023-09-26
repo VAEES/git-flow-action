@@ -11,7 +11,9 @@ export class Feature implements GitFlowHandler {
     public async test(): Promise<boolean> {
         const branches = await this.github.getBranches();
         const prefixes = this.github.getPrefixes();
-        return branches.current.includes(prefixes.feature);
+        const baseBranchIsFeature = branches.current.includes(prefixes.feature);
+        const targetBranchIsDevelopment = branches.target === 'development';
+        return baseBranchIsFeature && targetBranchIsDevelopment;
     }
 
     async handle(): Promise<string> {
