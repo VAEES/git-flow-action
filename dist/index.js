@@ -5978,6 +5978,10 @@ class GitFlowFactory {
     static assemble() {
         return __awaiter(this, void 0, void 0, function* () {
             const github = factory_1.GitHubFactory.assemble();
+            const branches = yield github.getBranches();
+            const prefixes = github.getPrefixes();
+            console.log('feature', prefixes.feature);
+            console.log('target', branches.target);
             this.setHandlers(github);
             const handler = yield this.getHandler();
             return new service_1.GitFlowService(handler);
@@ -6075,9 +6079,12 @@ class Feature {
         return __awaiter(this, void 0, void 0, function* () {
             const branches = yield this.github.getBranches();
             const prefixes = this.github.getPrefixes();
+            console.log(prefixes.feature);
             const baseBranchIsFeature = branches.current.includes(prefixes.feature);
+            console.log(branches.target);
             const targetBranchIsDevelopment = branches.target === 'development';
-            return baseBranchIsFeature && targetBranchIsDevelopment;
+            const targetBranchIsQuality = branches.target === 'quality';
+            return baseBranchIsFeature && (targetBranchIsDevelopment || targetBranchIsQuality);
         });
     }
     handle() {
