@@ -9,13 +9,6 @@ export class GitFlowFactory {
 
     public static async assemble() {
         const github = GitHubFactory.assemble();
-
-        const branches = await github.getBranches();
-        const prefixes = github.getPrefixes();
-
-        console.log('feature', prefixes.feature);
-        console.log('target', branches.target);
-
         this.setHandlers(github);
         const handler = await this.getHandler();
         return new GitFlowService(handler);
