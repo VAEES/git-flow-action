@@ -13,7 +13,8 @@ export class Feature implements GitFlowHandler {
         const prefixes = this.github.getPrefixes();
         const baseBranchIsFeature = branches.current.includes(prefixes.feature);
         const targetBranchIsDevelopment = branches.target === 'development';
-        return baseBranchIsFeature && targetBranchIsDevelopment;
+        const targetBranchIsQuality = branches.target === 'quality';
+        return baseBranchIsFeature && (targetBranchIsDevelopment || targetBranchIsQuality);
     }
 
     async handle(): Promise<string> {

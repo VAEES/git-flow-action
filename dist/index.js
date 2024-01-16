@@ -6077,7 +6077,8 @@ class Feature {
             const prefixes = this.github.getPrefixes();
             const baseBranchIsFeature = branches.current.includes(prefixes.feature);
             const targetBranchIsDevelopment = branches.target === 'development';
-            return baseBranchIsFeature && targetBranchIsDevelopment;
+            const targetBranchIsQuality = branches.target === 'quality';
+            return baseBranchIsFeature && (targetBranchIsDevelopment || targetBranchIsQuality);
         });
     }
     handle() {

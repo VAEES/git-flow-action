@@ -1,6 +1,6 @@
 {
     "name": "git-flow-action",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Github action to handle git flow",
     "main": "lib/main/index.js",
     "scripts": {
