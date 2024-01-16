@@ -32,36 +32,34 @@ export class GitHubService implements GitHub {
     }
 
     public async getBranches(): Promise<Branches> {
-        const current = await this.getCurrentBranchName();
-
+        const { current, target } = await this.getCurrentBranchName();
         return {
             current,
+            target,
             main: this.core.getInput('master_branch'),
             development: this.core.getInput('development_branch'),
         };
     }
 
-    private async getCurrentBranchName(): Promise<string> {
-        let branchName = this.client.context.ref;
-
-        if (branchName.includes('refs/pull/')) {
-            const pull = branchName.split('refs/pull/').join('').replace('/merge', '');
-            branchName = await this.getPullRequestHeadBranch(pull);
-        } else {
-            branchName = branchName.replace('refs/heads/', '');
-        }
-
-        return branchName;
+    private async getCurrentBranchName(): Promise<Pick<Branches, 'current' | 'target'>> {
+        const branchName = this.client.context.ref;
+        const pullRequest = branchName.split('refs/pull/').join('').replace('/merge', '');
+        const branches = await this.getPullRequestHeadBranch(pullRequest);
+        return branches;
     }
 
-    private async getPullRequestHeadBranch(pull: string): Promise<string> {
+    private async getPullRequestHeadBranch(
+        pull: string,
+    ): Promise<Pick<Branches, 'current' | 'target'>> {
         const instance = this.getOctokitInstance();
         const response = await instance.pulls.get({
             ...this.client.context.repo,
             pull_number: pull,
         });
-
-        return response.data.head.ref;
+        return {
+            current: response?.data?.head?.ref,
+            target: response?.data?.base?.ref,
+        };
     }
 
     public getPrefixes(): GitFlowBranchesPrefixes {

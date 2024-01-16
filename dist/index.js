@@ -5879,9 +5879,10 @@ class GitHubService {
     }
     getBranches() {
         return __awaiter(this, void 0, void 0, function* () {
-            const current = yield this.getCurrentBranchName();
+            const { current, target } = yield this.getCurrentBranchName();
             return {
                 current,
+                target,
                 main: this.core.getInput('master_branch'),
                 development: this.core.getInput('development_branch'),
             };
@@ -5889,22 +5890,21 @@ class GitHubService {
     }
     getCurrentBranchName() {
         return __awaiter(this, void 0, void 0, function* () {
-            let branchName = this.client.context.ref;
-            if (branchName.includes('refs/pull/')) {
-                const pull = branchName.split('refs/pull/').join('').replace('/merge', '');
-                branchName = yield this.getPullRequestHeadBranch(pull);
-            }
-            else {
-                branchName = branchName.replace('refs/heads/', '');
-            }
-            return branchName;
+            const branchName = this.client.context.ref;
+            const pullRequest = branchName.split('refs/pull/').join('').replace('/merge', '');
+            const branches = yield this.getPullRequestHeadBranch(pullRequest);
+            return branches;
         });
     }
     getPullRequestHeadBranch(pull) {
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const instance = this.getOctokitInstance();
             const response = yield instance.pulls.get(Object.assign(Object.assign({}, this.client.context.repo), { pull_number: pull }));
-            return response.data.head.ref;
+            return {
+                current: (_b = (_a = response === null || response === void 0 ? void 0 : response.data) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.ref,
+                target: (_d = (_c = response === null || response === void 0 ? void 0 : response.data) === null || _c === void 0 ? void 0 : _c.base) === null || _d === void 0 ? void 0 : _d.ref,
+            };
         });
     }
     getPrefixes() {
@@ -6075,7 +6075,10 @@ class Feature {
         return __awaiter(this, void 0, void 0, function* () {
             const branches = yield this.github.getBranches();
             const prefixes = this.github.getPrefixes();
-            return branches.current.includes(prefixes.feature);
+            const baseBranchIsFeature = branches.current.includes(prefixes.feature);
+            const targetBranchIsDevelopment = branches.target === 'development';
+            const targetBranchIsQuality = branches.target === 'quality';
+            return baseBranchIsFeature && (targetBranchIsDevelopment || targetBranchIsQuality);
         });
     }
     handle() {
